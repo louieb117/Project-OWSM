@@ -1,41 +1,24 @@
+import sys
+sys.path.insert(0, '~/Code/Project_OWSM/Project_OWSM/app')      # Moves path to method to be tested.
+import interdimensional_story_readers
 import aiounittest
 import asyncio
 import keyboard
+import random
 
-    def slowPrint(string):
-    for char in range(len(string)):
-        print(string[char], end="")
-        #time.sleep(x) can be used for a longer wait but is not needed...
-        #for a noticable reduction in output speed
-    print("")
-
-
-    asyncio def machine_loop():
-        test_object = open("TestFile.txt","r")
-        for
-
-
-    asyncio def pause_loop():
-        await keyboard.wait('esc')
-        print('\n\n\t\tPaused\n\n\tEnter esc again to exit the program: ')
-        keyboard.wait('esc')
-
-
-
-
+    def setup():
+        t1 = interdimensional_story_reader('TestFile.txt')
 
 class Test(aiounittest.AsyncTestCase):
 
+    def test_typing_sim():
+        setup()
+        #Qustion, does a slower output equal a fast output?
+        output_sim = t1.typing_sim(t1.Story_file)
+        output_test = 'This is text in a file.\n'
+        self.assertEqual(output_sim , output)
 
-
-    asyncio def main():
-        task1 = asyncio.create_task(machine_loop())
-        task2 = asyncio.create_task(pause_loop())
-
-        value = await task1
-        print(value)
-
-        asyncio.run(main())
 
 if __name__ == '__main__':
+    #asyncio.run(main())
     unittest.main()

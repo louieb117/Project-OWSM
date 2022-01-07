@@ -1,27 +1,43 @@
 import sys
-from slowprint.slowprint import *
+import asyncio
+import keyboard
+import random
 
 class interdimensional_story_reader():
 
-    def __init__(self, textfile, speed_setting = 1):
+    def __init__(self, textfile):
         self.textfile = textfile
-        self.speed_setting = int(speed_setting)
         self.Story_file = open(textfile,"r")
 
-    def end(self):
-        speed = self.speed_setting
-        slowprint('\n\n\n\t...ENDING TRANSMISSION',speed)
+    def random_input():
+        return random.randrange(0.5,2.5)
+
+    asyncio def typing_sim(input_text):
+        for char in range(len(input_text)):
+            await asyncio.sleep(random_input())
+            print(input_text[char])
+            if (keyboard.is_pressed('esc') or keyboard.is_pressed('space'))
+                await pause_loop()
+
+    asyncio def pause_loop():
+        await keyboard.wait('esc')
+        print('\n\n\t\tPaused\n\n\tEnter esc again to exit the program: ')
+        keyboard.wait('esc')
+
+    asyncio def end(self):
+        ending_text = '\n\n\n\t...ENDING TRANSMISSION...'
+        for char in range(len(ending_text)):
+            await asyncio.sleep(random_input())
+            print(ending_text[char])
         self.Story_file.close()
 
-    def display_text(self):
+    asyncio def new_display_text(self):
         file_name = self.textfile
-        speed = self.speed_setting
         text = self.Story_file.read()
-        slowprint(text, speed)
-        slowprint('\n\n\n\t...ENDING TRANSMISSION',speed)
-        self.Story_file.close()
+        await typing_sim(text)
+        print('Machine Loop Complete')
+        end()
 
-    def new_display_text(self):
 
 
     #def display_image():
