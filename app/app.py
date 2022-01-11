@@ -3,6 +3,110 @@ import pygame
 from interdimensional_story_reader import interdimensional_story_reader
 
 
+
+# ----------------------------------------------------------------------
+# MESSAGES (EVENTS)
+# ----------------------------------------------------------------------
+
+@dataclass
+class Message:
+    pass
+
+@dataclass
+class Menu_Curser_Message(Message):
+    direction: Tuple[int, int]
+
+@dataclass
+class Story_List_Option_Message(Message):
+    pass
+
+@dataclass
+class Credits_Option_Message(Message):
+    pass
+
+@dataclass
+class Exit_Message(Message):
+    reason: str
+
+@dataclass
+class Remove_Line_Message(Message):
+    pass
+
+# ----------------------------------------------------------------------
+# Sprites
+# ----------------------------------------------------------------------
+
+class Board(pygame.sprite.Sprite):
+    def __init__(self, WIDTH, HEIGHT):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((WIDTH, HEIGHT))
+        self.image.fill((13,13,13))
+        self.image.set_colorkey((13,13,13))
+        self.rect = self.image.get_rect()
+        self.font = pygame.font.SysFont("monospace", 18)
+
+    def add(self, letter, pos):
+        s = self.font.render(letter, 1, (255, 255, 0))
+        self.image.blit(s, pos)
+
+class Cursor(pygame.sprite.Sprite):
+    def __init__(self, board):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((10, 20))
+        self.image.fill((0,255,0))
+        self.text_height = 17
+        self.text_width = 10
+        self.rect = self.image.get_rect(topleft=(self.text_width, self.text_height))
+        self.board = board
+        self.text = ''
+        self.cooldown = 0
+        self.cooldowns = {'.': 12,
+                        '[': 18,
+                        ']': 18,
+                        ' ': 5,
+                        '\n': 30}
+
+    def write(self, text):
+        self.text = list(text)
+
+    # This function will give the effect of printing text
+    def update(self):
+        if not self.cooldown and self.text:
+            letter = self.text.pop(0)
+            if letter == '\n':
+                self.rect.move_ip((0, self.text_height))
+                self.rect.x = self.text_width
+            else:
+                self.board.add(letter, self.rect.topleft)
+                self.rect.move_ip((self.text_width, 0))
+            self.cooldown = self.cooldowns.get(letter, 8)
+
+        if self.cooldown:
+            self.cooldown -= 1
+
+
+# ----------------------------------------------------------------------
+# MAIN LOGIC
+# ----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+#
+# ----------------------------------------------------------------------
+
+
+
 class app():
     def __init__(self):
         self.file_name = ''
@@ -35,24 +139,17 @@ class app():
     def background_func(self):
         # Displays background assets
 
-    def Board(self):
-        # Surface / Textbox
-
-    def Cursor(self):
-        # Terminal Cursor Sprite
-
-    def title_screen_loop(self):
+    def display_title_screen(self):
         # Displays title assets with text requesting to Press Enter
 
     def credit_screen_loop(self):
         # Display credits
 
-    def
 
-
-    def menu_loop(self):
+    def dislay_menu_loop(self):
         # Display menu screen with buttons( cedit screen, Story List, exit )
 
+        #
 
     def Machine_Loop(self):
         pygame.init()
@@ -69,18 +166,15 @@ class app():
         clock = pygame.time.Clock()
         run = self.run_state
         FPS = 60
-        self.story = interdimensional_story_reader(self.file_name, self.number)
+        self.story = Interdimensional_Story_Reader(self.file_name, self.number)
 
         all_sprites = pygame.sprite.Group()
-        board = interdimensional_story_reader.Board()
-        cursor = interdimensional_story_reader.Cursor(board)
+        board = Interdimensional_Story_Reader.Board()
+        cursor = Interdimensional_Story_Reader.Cursor(board)
         all_sprites.add(cursor, board)
 
         text = self.story
         cursor.write(text)
-
-        # Init Title Loop
-        title_screen_loop()
 
         while run:
             clock.tick(FPS)
@@ -94,6 +188,8 @@ class app():
                     if event.key == pygame.K_ESCAPE:
                         self.story.pause_loop()
 
+            display_title_screen()
+            if
             # Init Menu Loop
             menu_loop()
 
@@ -102,6 +198,11 @@ class app():
 
 
         self.story.end()
+
+
+# ----------------------------------------------------------------------
+# Excutable
+# ----------------------------------------------------------------------
 
 if __name__ == "__main__":
     app1 = app()
