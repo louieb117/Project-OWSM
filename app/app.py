@@ -2,36 +2,6 @@ import sys, getopt
 import pygame
 from interdimensional_story_reader import interdimensional_story_reader
 
-
-
-# ----------------------------------------------------------------------
-# MESSAGES (EVENTS)
-# ----------------------------------------------------------------------
-
-@dataclass
-class Message:
-    pass
-
-@dataclass
-class Menu_Curser_Message(Message):
-    direction: Tuple[int, int]
-
-@dataclass
-class Story_List_Option_Message(Message):
-    pass
-
-@dataclass
-class Credits_Option_Message(Message):
-    pass
-
-@dataclass
-class Exit_Message(Message):
-    reason: str
-
-@dataclass
-class Remove_Line_Message(Message):
-    pass
-
 # ----------------------------------------------------------------------
 # Sprites
 # ----------------------------------------------------------------------
@@ -86,7 +56,7 @@ class Cursor(pygame.sprite.Sprite):
 
 
 # ----------------------------------------------------------------------
-# MAIN LOGIC
+# Screen Layouts
 # ----------------------------------------------------------------------
 
 
@@ -102,7 +72,7 @@ class Cursor(pygame.sprite.Sprite):
 
 
 # ----------------------------------------------------------------------
-#
+# System Logic
 # ----------------------------------------------------------------------
 
 
@@ -116,6 +86,13 @@ class app():
         self.WIDTH = 500
         self.HEIGHT = 500
         self.WINDOW_TITLE = 'Project OWSM'
+        self.COLOR_BACKGROUND = (0,0,0)
+        self.title_screen = True
+        self.menu_screen = False
+        self.credit_screen = False
+        self.reader_screen = False
+        self.pause_screen = False
+        self.exit_screen = False
 
     def cli_arg(self, argv):
         try:
@@ -159,7 +136,7 @@ class app():
 
         window = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         window.display.set_caption(self.WINDOW_TITLE)
-        color = (0,0,0)
+        color = self.COLOR_BACKGROUND
         window.fill(color)
         pygame.display.flip()
 
@@ -183,11 +160,58 @@ class app():
                 if event.type == pygame.QUIT:
                     run = False
                     pygame.quit()
-                # Init Pause Loop
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.story.pause_loop()
+                # Title Screen Key Handler
+                if (self.title_screen & event.type == pygame.KEYDOWN):
+                    if event.key != pygame.K_ENTER:
+                        return
+                    # calls Menu screen render event
 
+                    self.title_screen = False
+                    self.menu_screen = True
+                # Menu Screen Key Handler
+                if (self.menu_screen & event.type == pygame.KEYDOWN):
+                    if event.key == pygame.K_DOWN:
+                        # Checks to see if Cursor Sprite is on last selection
+                        # Calls Sprite to render down 1 selection
+                    elif event.key == pygame.K_UP:
+                        # Checks to see if Cursor Sprite is on the top selection
+                        # Calls Sprite to render up 1 selection
+                    elif event.key == pygame.K_ENTER:
+                        # Checks to see which selection the Cursor Sprite is on
+                        # Calls Reader or  Credits or Exits render event
+                    self.menu_screen = False
+                # Credits Screen Key Handler
+                if (self.credit_screen & event.type == pygame.KEYDOWN):
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_ENTER:
+                        # Calls menu_screen render event
+                    self.credit_screen = False
+                    self.menu_screen = True
+                # Reader Screen Key Handler
+                if (self.reader_screen & event.type == pygame.KEYDOWN):
+                    if event.key == pygame.K_ESCAPE:
+                        # Calls pause menu render event
+                        self.story.pause_loop()
+                    self.reader_screen = False
+                    self.pause_screen = True
+                # Pause Screen Key Handler
+                if (self.pause_screen & event.type == pygame.KEYDOWN):
+                    if event.key == pygame.K_ENTER:
+                        # Calls reader render event
+                    self.pause_screen = False
+                    self.reader_screen = True
+                    elif event.key == pygame.K_ESCAPE:
+                        # Calls menu render event
+                    self.pause_screen = False
+                    self.menu_screen = True
+
+                # Exit Screen Key Handler
+                if (self.exit_screen & event.type == pygame.KEYDOWN):
+                    if event.key == pygame.K_ENTER:
+                        pygame.quit()
+                    elif event.key == pygame.K_ESCAPE:
+                        # Calls menu render event
+                    self.exit_screen = False
+                    self.menu_screen = True
             display_title_screen()
             if
             # Init Menu Loop
