@@ -54,29 +54,9 @@ class Text_Cursor(pygame.sprite.Sprite):
         if self.cooldown:
             self.cooldown -= 1
 
-
-
-# ----------------------------------------------------------------------
-# Screen Layouts
-# ----------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ----------------------------------------------------------------------
 # System Logic
 # ----------------------------------------------------------------------
-
-
 
 class app():
     def __init__(self):
@@ -86,6 +66,8 @@ class app():
         self.run_state = True
         self.WIDTH = 1024
         self.HEIGHT = 1024
+        self.WIDTH_Text_Box = 816
+        self.HEIGHT_Text_Box = 815
         self.WINDOW_TITLE = 'Project OWSM'
         self.COLOR_BACKGROUND = (0,0,0)
         self.title_screen = True
@@ -145,13 +127,14 @@ class app():
         #self.story = Interdimensional_Story_Reader(self.file_name, self.number)
 
         all_sprites = pygame.sprite.Group()
-        board = Board(500, 500)
+        board = Board(self.WIDTH_Text_Box, self.HEIGHT_Text_Box)
         text_cursor = Text_Cursor(board)
         #all_sprites.add(text_cursor, board, menu_cursor)
         #all_sprites.add(menu_cursor)
 
         text = self.story
         text_cursor.write(text)
+        print('KeyHandler: Title Screen Event Call')
 
         while run:
             clock.tick(FPS)
@@ -161,19 +144,19 @@ class app():
 
                 # Exits program if window is closed
                 if event.type == pygame.QUIT:
-                    print('Program Exit Protocol')
                     run = False
+                    print('KeyHandler: Exit Event Call')
                     pygame.quit()
                     sys.exit('Done')
 
                 # Title Screen Key Handler
                 if (self.title_screen and event.type == pygame.KEYDOWN):
-                    print('Image Copy')
                     if event.key == pygame.K_RETURN:
                         # Calls Menu screen render event
-                        print('Enter key was pressed in the Title Screen')
+                        print('KeyHandler: Enter key was pressed in the Title Screen')
                         self.title_screen = False
                         self.menu_screen = True
+                        print('KeyHandler: Menu Screen Event Call')
                     break
 
                 # Menu Screen Key Handler
@@ -183,69 +166,89 @@ class app():
                         # Calls Sprite to render down 1 selection
                         menu_weight += 1
                         print (menu_weight)
-                        print('KeyHandler: Down key was pressed in the menu screen')
+                        print('KeyHandler: Down key was pressed in the Menu Screen')
                     elif event.key == pygame.K_UP and menu_weight > 0:
                         # Checks to see if Cursor Sprite is on the top selection
                         # Calls Sprite to render up 1 selection
                         menu_weight -= 1
-                        print('KeyHandler: Up key was pressed in the menu screen')
+                        print('KeyHandler: Up key was pressed in the Menu Screen')
                     elif event.key == pygame.K_RETURN:
                         # Checks to see which selection the Cursor Sprite is on
                         # Calls Reader or  Credits or Exits render event
                         if menu_weight == 0:
+                            print('Enter key was pressed in the Menu Screen on Activation')
                             self.reader_screen = True
-                            print('Enter key was pressed in the menu screen on Activation')
+                            print('KeyHandler: Reader Screen Event Call')
                         elif menu_weight == 1:
+                            print('Enter key was pressed in the Menu Screen on Credits')
                             self.credit_screen = True
-                            print('Enter key was pressed in the menu screen on Credits')
+                            print('KeyHandler: Credits Screen Event Call')
                         elif menu_weight == 2:
-                            print('Enter key was pressed in the menu screen on Exit')
+                            print('Enter key was pressed in the Menu Screen on Exit')
                             run = False
+                            print('KeyHandler: Exit Event Call')
                             pygame.quit()
                             sys.exit('Done')
                         self.menu_screen = False
+                    break
 
                 # Credits Screen Key Handler
                 if (self.credit_screen and event.type == pygame.KEYDOWN):
                     if event.key == pygame.K_ESCAPE or event.key == pygame.K_RETURN:
                         # Calls menu_screen render event
+                        print('KeyHandler: Enter key was pressed in the Credits Screen')
                         self.credit_screen = False
                         self.menu_screen = True
-
-                # Reader Screen Key Handler
-                if (self.reader_screen and event.type == pygame.KEYDOWN):
-                    if event.key == pygame.K_ESCAPE:
-                        # Calls pause menu render event
-                        self.reader_screen = False
-                        self.pause_screen = True
+                        print('KeyHandler: Menu Screen Event Call')
+                    break
 
                 # Pause Screen Key Handler
                 if (self.pause_screen and event.type == pygame.KEYDOWN):
                     if event.key == pygame.K_RETURN:
                         #Bug? # Calls reader render event
+                        print('KeyHandler: Enter key was pressed in the Pause Screen')
                         self.pause_screen = False
                         self.reader_screen = True
+                        print('KeyHandler: Reader Screen Event Call')
                     elif event.key == pygame.K_ESCAPE:
                         # Calls menu render event
+                        print('KeyHandler: Esc key was pressed in the Pause Screen')
                         self.pause_screen = False
+                        self.reader_screen = False
                         self.menu_screen = True
+                        print('KeyHandler: Menu Screen Event Call')
+                    break
+
+                # Reader Screen Key Handler
+                if (self.reader_screen and event.type == pygame.KEYDOWN):
+                    if event.key == pygame.K_ESCAPE:
+                        # Calls pause menu render event
+                        # Calls pause text event
+                        print('KeyHandler: Esc key was pressed in the Reader Screen')
+                        self.reader_screen = False
+                        self.pause_screen = True
+                        print('KeyHandler: Pause Screen Event Call')
+                    break
+
 
                 # Exit Screen Key Handler
                 if (self.exit_screen and event.type == pygame.KEYDOWN):
                     if event.key == pygame.K_RETURN:
+                        print('KeyHandler: Enter key was pressed in the Exit Screen')
                         run = False
+                        print('KeyHandler: Exit Event Call')
                         pygame.quit()
                     elif event.key == pygame.K_ESCAPE:
                         # Calls menu render event
+                        print('KeyHandler: Esc key was pressed in the Exit Screen')
                         self.exit_screen = False
                         self.menu_screen = True
-
+                        print('KeyHandler: Menu Screen Event Call')
+                    break
                 all_sprites.update()
 
             if self.title_screen:
-
                 window.blit(title_screen_png,(0,0))
-
             elif self.menu_screen:
                 if menu_weight == 0:
                     window.blit(menu_screen_activate_png, (0,0))
